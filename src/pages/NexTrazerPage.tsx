@@ -4,6 +4,15 @@ import { usePageMeta } from '@/hooks/usePageMeta'
 import { useReveal } from '@/hooks/useReveal'
 import { PRODUCT_NAME } from '@/config/site'
 
+/**
+ * Temporarily hides the "How it works" section. The copy lives in
+ * nextrazer.howItWorks (src/content/products.ts) and is left untouched, so
+ * flipping this to true brings the section back with no other change.
+ * It also controls the hero's "See how it works" button, which scrolls to that
+ * section and would otherwise be a dead link.
+ */
+const SHOW_HOW_IT_WORKS = false
+
 export function NexTrazerPage() {
   usePageMeta(PRODUCT_NAME, nextrazer.hero.subtitle)
   useReveal()
@@ -17,7 +26,7 @@ export function NexTrazerPage() {
         actions={
           <>
             <Button cta={nextrazer.hero.primaryCta} variant="accent" />
-            <Button cta={nextrazer.hero.secondaryCta} variant="ghost-light" />
+            {SHOW_HOW_IT_WORKS && <Button cta={nextrazer.hero.secondaryCta} variant="ghost-light" />}
           </>
         }
       />
@@ -47,15 +56,17 @@ export function NexTrazerPage() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="section" id="how-it-works">
-        <div className="container">
-          <SectionHead eyebrow={nextrazer.howItWorks.eyebrow} title={nextrazer.howItWorks.title} />
-          <div className="reveal">
-            <Steps steps={nextrazer.howItWorks.steps} />
+      {/* How it works (hidden while SHOW_HOW_IT_WORKS is false) */}
+      {SHOW_HOW_IT_WORKS && (
+        <section className="section" id="how-it-works">
+          <div className="container">
+            <SectionHead eyebrow={nextrazer.howItWorks.eyebrow} title={nextrazer.howItWorks.title} />
+            <div className="reveal">
+              <Steps steps={nextrazer.howItWorks.steps} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Integrity */}
       <section className="section section--navy">
