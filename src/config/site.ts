@@ -6,20 +6,20 @@
  * can be updated in one place.
  */
 
-export const COMPANY_NAME = 'NexEease'
+export const COMPANY_NAME = 'NexEasee'
 export const PRODUCT_NAME = 'NexTrazer'
 
 export const site = {
   name: COMPANY_NAME,
   tagline: 'Traceability software for regulated supply chains',
   description:
-    'NexEease builds traceability, compliance and verification software that gives regulated supply chains a single, verifiable record of product identity, custody and compliance.',
-  url: 'https://www.nexeease.com',
+    'NexEasee builds traceability, compliance and verification software that gives regulated supply chains a single, verifiable record of product identity, custody and compliance.',
+  url: 'https://nexeasee.com',
 
   contact: {
-    email: 'info@nexeease.com',
+    email: 'info@nexeasee.com',
     phone: '+32466206624',
-    addressLines: ['NexEease Solutions', 'Excelsiorlaan 72', 'Zaventem, Belgium'],
+    addressLines: ['NexEasee Solutions', 'Excelsiorlaan 72', 'Zaventem, Belgium'],
   },
 
   social: [

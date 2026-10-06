@@ -2,7 +2,7 @@
   "name": "nexeaseewebsite",
   "private": true,
   "version": "0.1.0",
-  "description": "NexEease corporate website — company, products (NexTrazer) and contact pages.",
+  "description": "NexEasee corporate website — company, products (NexTrazer) and contact pages.",
   "type": "module",
   "scripts": {
     "dev": "vite",

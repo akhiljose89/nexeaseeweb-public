@@ -1,6 +1,6 @@
-# NexEease Website
+# NexEasee Website
 
-Corporate website for **NexEease** — company overview, products (**NexTrazer**) and contact.
+Corporate website for **NexEasee** — company overview, products (**NexTrazer**) and contact.
 
 Built with [Vite](https://vite.dev) + [React](https://react.dev) + TypeScript + [React Router](https://reactrouter.com). No CSS framework — plain CSS with design tokens in `src/styles/global.css`.
 
