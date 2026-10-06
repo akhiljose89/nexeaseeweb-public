@@ -9,6 +9,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
+ROOT=$(pwd)
 
 # gh-pages must never contain a build of code that main doesn't have, so refuse to
 # publish while there are uncommitted changes.
@@ -28,7 +29,8 @@ npm run build
 # node_modules can never end up in the published files.
 git fetch origin gh-pages
 WORKTREE=$(mktemp -d "${TMPDIR:-/tmp}/nexeasee-ghpages.XXXXXX")
-trap 'git worktree remove --force "$WORKTREE" >/dev/null 2>&1 || true; git worktree prune' EXIT
+# Leave the worktree before deleting it: git cannot prune from a directory that no longer exists.
+trap 'cd "$ROOT"; git worktree remove --force "$WORKTREE" >/dev/null 2>&1 || true; git worktree prune' EXIT
 git worktree add -B gh-pages "$WORKTREE" origin/gh-pages >/dev/null
 
 # Mirror dist/ into the branch. --delete drops files that no longer exist in the build
