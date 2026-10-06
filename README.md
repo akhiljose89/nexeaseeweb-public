@@ -65,6 +65,26 @@ The form in `src/pages/ContactPage.tsx` currently shows a confirmation message c
 
 ## Deployment
 
-`npm run build` outputs a static site into `dist/`. It can be hosted on any static host (Netlify, Vercel, Cloudflare Pages, S3 + CloudFront, Azure Static Web Apps, nginx…).
+The site is hosted on GitHub Pages at **nexeasee.com**. Pages serves the **`gh-pages`** branch, which contains only the built output (`index.html`, `assets/`, `logo/`). Source code lives on **`main`**. Pushing to `main` alone does not change the live site; the build has to be published to `gh-pages`.
 
-Because the site uses client-side routing, configure the host to serve `index.html` for unknown paths (SPA fallback).
+### Automatic (normal route)
+
+Push to `main` and `.github/workflows/deploy.yml` builds the site and publishes it to `gh-pages`. Watch it in the repo's **Actions** tab. The change is live 1-2 minutes after the run finishes; hard-refresh (Cmd+Shift+R) to bypass your browser cache.
+
+### Manual (fallback)
+
+```bash
+npm run deploy
+```
+
+Commit your changes first. The script refuses to publish while there are uncommitted changes, so `gh-pages` never holds a build of code `main` doesn't have. It builds, copies `dist/` onto `gh-pages` using a temporary worktree, and pushes. It needs push access to the repo (SSH key or credential helper).
+
+### One-time Pages settings (already done)
+
+Repo **Settings -> Pages**: Source = *Deploy from a branch*, branch `gh-pages`, folder `/ (root)`, custom domain `nexeasee.com`, *Enforce HTTPS* on.
+
+### How the build handles routing and the domain
+
+- **Client-side routes.** GitHub Pages only serves files that exist, so `/about` would 404 on a direct visit or refresh. `vite.config.ts` copies the app shell to `about/index.html`, `products/index.html`, `products/nextrazer/index.html`, `contact/index.html` and `404.html` after every build. **When you add a route in `src/App.tsx`, add it to `ROUTES` in `vite.config.ts` too.**
+- **Custom domain.** `public/CNAME` and `public/.nojekyll` are copied into `dist/` by the build, so the domain survives every deploy.
+- **`dist/` is not committed to `main`** (it is gitignored); it only ever lives on `gh-pages`.
