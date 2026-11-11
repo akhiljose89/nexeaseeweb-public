@@ -45,10 +45,18 @@ jobs:
 
       # Mirror dist/ into the branch. --delete drops files that no longer exist in the
       # build (old hashed bundles); the .git exclude protects the checkout's own git data.
+      # --checksum compares file contents. rsync's default shortcut (same size and same
+      # timestamp means unchanged) once skipped index.html: a new build only changes the
+      # hash in the bundle's filename, so the size is identical, and the page was left
+      # pointing at a bundle that had just been deleted.
       - name: Publish build to gh-pages
         run: |
-          rsync -a --delete --exclude='.git' dist/ .gh-pages/
+          rsync -a --checksum --delete --exclude='.git' dist/ .gh-pages/
           cd .gh-pages
+          # Never publish a page whose scripts or styles are missing.
+          for ref in $(grep -ohE '/assets/[^"]+' $(find . -name '*.html' -not -path './.git/*') | sort -u); do
+            [ -f ".$ref" ] || { echo "::error::A page references $ref but it is not in the build"; exit 1; }
+          done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
