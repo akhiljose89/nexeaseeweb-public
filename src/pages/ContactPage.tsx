@@ -4,15 +4,47 @@ import { Icon } from '@/components/Icons'
 import { site } from '@/config/site'
 import { contact } from '@/content/contact'
 import { usePageMeta } from '@/hooks/usePageMeta'
+import { recipientFor, sendEnquiry } from '@/lib/contactForm'
+
+type Status = 'idle' | 'sending' | 'sent' | 'error'
 
 export function ContactPage() {
   usePageMeta('Contact', contact.hero.subtitle)
-  const [sent, setSent] = useState(false)
+  const [status, setStatus] = useState<Status>('idle')
+  // Mailbox the failed message was meant for, so the error can point people to it.
+  const [failedRecipient, setFailedRecipient] = useState('')
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // TODO: wire to a form backend / API endpoint. For now, show a confirmation.
-    setSent(true)
+    if (status === 'sending') return
+
+    const data = new FormData(e.currentTarget)
+    const field = (name: string) => String(data.get(name) ?? '').trim()
+
+    // Honeypot: real visitors never see this field, bots fill it in. Pretend it worked
+    // and drop the message, so the bot learns nothing.
+    if (field('_honey')) {
+      setStatus('sent')
+      return
+    }
+
+    const enquiry = {
+      name: field('name'),
+      email: field('email'),
+      company: field('company'),
+      subject: field('subject'),
+      message: field('message'),
+    }
+
+    setStatus('sending')
+    try {
+      await sendEnquiry(enquiry)
+      setStatus('sent')
+    } catch {
+      // The form stays mounted, so everything the visitor typed is still there.
+      setFailedRecipient(recipientFor(enquiry.subject))
+      setStatus('error')
+    }
   }
 
   return (
@@ -23,7 +55,7 @@ export function ContactPage() {
         <div className="container">
           <div className="contact-grid">
             <div className="form">
-              {sent ? (
+              {status === 'sent' ? (
                 <div className="form__success" role="status">
                   <div className="card__icon card__icon--accent">
                     <Icon name="check" />
@@ -64,10 +96,19 @@ export function ContactPage() {
                     <label htmlFor="message">Message</label>
                     <textarea id="message" name="message" required placeholder="Tell us about your products, participants and compliance needs." />
                   </div>
-                  <button type="submit" className="btn btn--primary">
-                    {contact.form.submitLabel}
+                  <div className="hp-field" aria-hidden="true">
+                    <label htmlFor="_honey">Leave this field empty</label>
+                    <input id="_honey" name="_honey" type="text" tabIndex={-1} autoComplete="off" />
+                  </div>
+                  <button type="submit" className="btn btn--primary" disabled={status === 'sending'}>
+                    {status === 'sending' ? contact.form.sendingLabel : contact.form.submitLabel}
                     <Icon name="arrow" />
                   </button>
+                  {status === 'error' && (
+                    <p className="form__error" role="alert">
+                      {contact.form.errorText} <a href={`mailto:${failedRecipient}`}>{failedRecipient}</a>.
+                    </p>
+                  )}
                   <p className="form__note">We will only use your details to respond to your enquiry.</p>
                 </form>
               )}

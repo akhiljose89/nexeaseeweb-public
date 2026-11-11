@@ -17,7 +17,10 @@ export const site = {
   url: 'https://nexeasee.com',
 
   contact: {
+    // Where the contact form delivers: enquiries that choose "Request a demo" go to
+    // demoEmail, every other topic goes to email (also the address shown on the page).
     email: 'info@nexeasee.com',
+    demoEmail: 'demo@nexeasee.com',
     phone: '+32466206624',
     addressLines: ['NexEasee Solutions', 'Excelsiorlaan 72', 'Zaventem, Belgium'],
   },

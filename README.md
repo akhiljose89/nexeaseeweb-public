@@ -61,7 +61,19 @@ transparent mark partly disappears in dark-mode browser tabs.
 
 ## Contact form
 
-The form in `src/pages/ContactPage.tsx` currently shows a confirmation message client-side only. Wire the `onSubmit` handler to a form backend (e.g. Formspree, Netlify Forms, or an API endpoint) before going live.
+The site is static, so it cannot send email itself. `src/lib/contactForm.ts` posts each enquiry to [FormSubmit](https://formsubmit.co), which forwards it to the mailbox in the request URL. Which mailbox is decided by the **Subject** dropdown:
+
+| Subject | Delivered to |
+|---|---|
+| Request a demo | `demo@nexeasee.com` |
+| Partnership, Careers, General enquiry | `info@nexeasee.com` |
+
+- **Change the addresses:** `site.contact.demoEmail` and `site.contact.email` in `src/config/site.ts`.
+- **Change which topic goes to the demo mailbox, or add topics:** `DEMO_SUBJECT` and `subjects` in `src/content/contact.ts`.
+- **Replying:** the visitor's address is sent as `email`, which FormSubmit uses as the Reply-To, so replying to the notification answers the visitor.
+- **Errors:** a message only counts as sent when FormSubmit explicitly confirms it. Otherwise the visitor sees an error that keeps what they typed and links to the right mailbox.
+- **Spam:** a hidden `_honey` field catches simple bots; anything that fills it is silently dropped.
+- **One-time activation:** FormSubmit holds messages for a mailbox until its owner clicks an activation link, sent to that mailbox after the first submission. Do this once for each address.
 
 ## Deployment
 

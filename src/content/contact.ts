@@ -1,5 +1,8 @@
 import { COMPANY_NAME } from '@/config/site'
 
+/** The topic whose enquiries are delivered to the demo mailbox (see src/lib/contactForm.ts). */
+export const DEMO_SUBJECT = 'Request a demo'
+
 /**
  * Contact page content.
  */
@@ -12,10 +15,12 @@ export const contact = {
 
   form: {
     title: 'Send us a message',
-    subjects: ['Request a demo', 'Partnership', 'Careers', 'General enquiry'],
+    subjects: [DEMO_SUBJECT, 'Partnership', 'Careers', 'General enquiry'],
     submitLabel: 'Send message',
+    sendingLabel: 'Sending…',
     successTitle: 'Thanks for reaching out!',
     successText: 'We have received your message and will get back to you shortly.',
+    errorText: 'Sorry, your message could not be sent. Please try again, or email us directly at',
   },
 
   reasons: [
