@@ -141,15 +141,6 @@ export function ContactPage() {
                 </div>
                 <div className="info-item">
                   <div className="card__icon card__icon--accent">
-                    <Icon name="phone" />
-                  </div>
-                  <div>
-                    <h3>Phone</h3>
-                    <a href={`tel:${site.contact.phone.replace(/\s+/g, '')}`}>{site.contact.phone}</a>
-                  </div>
-                </div>
-                <div className="info-item">
-                  <div className="card__icon card__icon--accent">
                     <Icon name="pin" />
                   </div>
                   <div>
